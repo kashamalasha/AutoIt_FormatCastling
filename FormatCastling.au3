@@ -1,20 +1,28 @@
 #include <ButtonConstants.au3>
+#include <GUIConstants.au3>
 #include <GUIConstantsEx.au3>
 ;#include <Dbug.au3>
 
 Global $sFormat
+
+If $CmdLine[0] < 3 Then
+   MsgBox(16, @ScriptName & ": Ошибка", "Неверно указана строка соединения с БД" & _
+			@CRLF & "Укажи параметры следующим образом:" & _
+			@CRLF & @CRLF & """FormatCastling.exe TNS USER PASSWORD""")
+EndIf
+
 Global $sTNS = $CmdLine[1]
-Global $sUSERNAME = $CmdLine[2]
-Global $sPASSWORD = $CmdLine[3]
+Global $sUsername = $CmdLine[2]
+Global $sPassword = $CmdLine[3]
 
 Func WhoIsThere()
-
     Local $oSQL = ObjCreate("ADODB.Connection")
+
     With $oSQL
       .ConnectionString =("Provider='OraOLEDB.Oracle';" & _
                           "Data Source=" & $sTNS & ";" & _
-                          "User Id=" & $sUSERNAME & ";" & _
-                          "Password=" & $sPASSWORD & ";")
+                          "User Id=" & $sUsername & ";" & _
+                          "Password=" & $sPassword & ";")
       .Open
     EndWith
     Local $oSQLrs = ObjCreate("ADODB.RecordSet")
@@ -35,13 +43,13 @@ Func WhoIsThere()
 EndFunc ;==>WhoIsThere
 
 Func TheCastling()
-
     Local $oSQL = ObjCreate("ADODB.Connection")
+
     With $oSQL
       .ConnectionString =("Provider='OraOLEDB.Oracle';" & _
                           "Data Source=" & $sTNS & ";" & _
-                          "User Id=" & $sUSERNAME & ";" & _
-                          "Password=" & $sPASSWORD & ";")
+                          "User Id=" & $sUsername & ";" & _
+                          "Password=" & $sPassword & ";")
       .Open
     EndWith
 
@@ -71,11 +79,12 @@ EndFunc ;==>TheCastling
 
 Func Main()
     Local $bSet = False
-    Local $iCount = TimerInit() 
+    Local $iCount = TimerInit()
     Local $sSetFormat
 
-    GUICreate("TC X-K?", 120, 120)
-    $idChange = GUICtrlCreateButton("Format Pic", 10, 10, 100, 100, $BS_ICON)
+    GUICreate("FC", 120, 120, @DesktopWidth - 160, 100, Default, $WS_EX_TOPMOST)
+    GUISetIcon(@ScriptDir & "\FC.ico")
+	$idChange = GUICtrlCreateButton("Format Pic", 10, 10, 100, 100, $BS_ICON)
 
     WhoIsThere()
     $sSetFormat = $sFormat
@@ -96,15 +105,16 @@ Func Main()
             Else
                 GUICtrlSetImage($idChange, @ScriptDir & "\giper.ico")
                 $bSet = True
-            EndIf
-            $sSetFormat = $sFormat
+			 EndIf
+			 GUICtrlSetData($idChange, $sFormat)
+             $sSetFormat = $sFormat
         EndIf
         If TimerDiff($iCount) >= 1000 Then
             WhoIsThere()
             If StringCompare($sFormat, $sSetFormat) <> 0 Then
                 $bSet = False
             EndIf
-                $iCount = TimerInit() 
+                $iCount = TimerInit()
         EndIf
     WEnd
 EndFunc   ;==>Main
