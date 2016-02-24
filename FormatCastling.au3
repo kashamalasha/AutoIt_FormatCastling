@@ -22,6 +22,8 @@ If @Compiled Then
 	FileInstall("giper.ico", @TempDir & "\giper.ico")
 	FileInstall("super.ico", @TempDir & "\super.ico")
     FileChangeDir(@TempDir)
+Else
+	FileChangeDir(@ScriptDir)
 EndIf
 
 Func WhoIsThere()
