@@ -16,7 +16,6 @@ EndIf
 Global $sTNS = $CmdLine[1]
 Global $sUsername = $CmdLine[2]
 Global $sPassword = $CmdLine[3]
-Global $sCurDir
 
 If @Compiled Then
 	FileInstall("giper.ico", @TempDir & "\giper.ico")
