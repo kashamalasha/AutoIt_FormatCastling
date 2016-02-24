@@ -9,6 +9,7 @@ If $CmdLine[0] < 3 Then
    MsgBox(16, @ScriptName & ": Ошибка", "Неверно указана строка соединения с БД" & _
 			@CRLF & "Укажи параметры следующим образом:" & _
 			@CRLF & @CRLF & """FormatCastling.exe TNS USER PASSWORD""")
+   Exit
 EndIf
 
 Global $sTNS = $CmdLine[1]
