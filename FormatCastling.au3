@@ -3,7 +3,6 @@
 #include <ButtonConstants.au3>
 #include <GUIConstants.au3>
 #include <GUIConstantsEx.au3>
-;#include <Dbug.au3>
 
 Global $sFormat
 
