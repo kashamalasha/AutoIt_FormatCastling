@@ -11,10 +11,10 @@ Func WhoIsThere()
 
     Local $oSQL = ObjCreate("ADODB.Connection")
     With $oSQL
-      .ConnectionString =(  "Provider='OraOLEDB.Oracle';" & _
-                            "Data Source=" & $sTNS & ";" & _
-                            "User Id=" & $sUSERNAME & ";" & _
-                            "Password=" & $sPASSWORD & ";")
+      .ConnectionString =("Provider='OraOLEDB.Oracle';" & _
+                          "Data Source=" & $sTNS & ";" & _
+                          "User Id=" & $sUSERNAME & ";" & _
+                          "Password=" & $sPASSWORD & ";")
       .Open
     EndWith
     Local $oSQLrs = ObjCreate("ADODB.RecordSet")
@@ -38,30 +38,30 @@ Func TheCastling()
 
     Local $oSQL = ObjCreate("ADODB.Connection")
     With $oSQL
-      .ConnectionString =(  "Provider='OraOLEDB.Oracle';" & _
-                            "Data Source=" & $sTNS & ";" & _
-                            "User Id=" & $sUSERNAME & ";" & _
-                            "Password=" & $sPASSWORD & ";")
+      .ConnectionString =("Provider='OraOLEDB.Oracle';" & _
+                          "Data Source=" & $sTNS & ";" & _
+                          "User Id=" & $sUSERNAME & ";" & _
+                          "Password=" & $sPASSWORD & ";")
       .Open
     EndWith
 
     If $sFormat = 'SUPER' Then
-        $oSQL.Execute(  "UPDATE SDD.DEPARTMENT_EXT DE " & _
-                        "SET DE.EXT_STRING = 'GIPER' " & _
-                        "WHERE DE.EXT_NAME = 'FORMAT' AND " & _
-                        "DE.ID_DEPARTMENT = ( " & _
-                        "   SELECT D.ID_DEPARTMENT " & _
-                        "   FROM SDD.DEPARTMENT D " & _
-                        "   WHERE D.IS_HOST = 1)" _
+        $oSQL.Execute("UPDATE SDD.DEPARTMENT_EXT DE " & _
+                      "SET DE.EXT_STRING = 'GIPER' " & _
+                      "WHERE DE.EXT_NAME = 'FORMAT' AND " & _
+                      "DE.ID_DEPARTMENT = ( " & _
+                      "   SELECT D.ID_DEPARTMENT " & _
+                      "   FROM SDD.DEPARTMENT D " & _
+                      "   WHERE D.IS_HOST = 1)" _
                )
     Else
-        $oSQL.Execute(  "UPDATE SDD.DEPARTMENT_EXT DE " & _
-                        "SET DE.EXT_STRING = 'SUPER' " & _
-                        "WHERE DE.EXT_NAME = 'FORMAT' AND " & _
-                        "DE.ID_DEPARTMENT = ( " & _
-                        "   SELECT D.ID_DEPARTMENT " & _
-                        "   FROM SDD.DEPARTMENT D " & _
-                        "   WHERE D.IS_HOST = 1)" _
+        $oSQL.Execute("UPDATE SDD.DEPARTMENT_EXT DE " & _
+                      "SET DE.EXT_STRING = 'SUPER' " & _
+                      "WHERE DE.EXT_NAME = 'FORMAT' AND " & _
+                      "DE.ID_DEPARTMENT = ( " & _
+                      "   SELECT D.ID_DEPARTMENT " & _
+                      "   FROM SDD.DEPARTMENT D " & _
+                      "   WHERE D.IS_HOST = 1)" _
                )
     EndIf
     $oSQL.Close
