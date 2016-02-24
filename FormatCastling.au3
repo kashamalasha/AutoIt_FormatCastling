@@ -89,7 +89,7 @@ EndFunc ;==>TheCastling
 
 Func Main()
     Local $bSet = False
-    Local $iCount = TimerInit()
+    Local $lCount = TimerInit()
     Local $sSetFormat
 
     GUICreate("FC", 120, 120, @DesktopWidth - 160, 100, Default, $WS_EX_TOPMOST)
@@ -119,16 +119,16 @@ Func Main()
             Else
                 GUICtrlSetImage($idChange, @WorkingDir & "\giper.ico")
                 $bSet = True
-			 EndIf
-			 GUICtrlSetData($idChange, $sFormat)
-             $sSetFormat = $sFormat
+			EndIf
+			GUICtrlSetData($idChange, $sFormat)
+            $sSetFormat = $sFormat
         EndIf
-        If TimerDiff($iCount) >= 1000 Then
+        If TimerDiff($lCount) >= 1000 Then
             WhoIsThere()
             If StringCompare($sFormat, $sSetFormat) <> 0 Then
                 $bSet = False
             EndIf
-                $iCount = TimerInit()
+                $lCount = TimerInit()
         EndIf
     WEnd
 EndFunc   ;==>Main
