@@ -1,3 +1,5 @@
+#AutoIt3Wrapper_Icon=FC.ico
+
 #include <ButtonConstants.au3>
 #include <GUIConstants.au3>
 #include <GUIConstantsEx.au3>
@@ -15,6 +17,13 @@ EndIf
 Global $sTNS = $CmdLine[1]
 Global $sUsername = $CmdLine[2]
 Global $sPassword = $CmdLine[3]
+Global $sCurDir
+
+If @Compiled Then
+	FileInstall("giper.ico", @TempDir & "\giper.ico")
+	FileInstall("super.ico", @TempDir & "\super.ico")
+    FileChangeDir(@TempDir)
+EndIf
 
 Func WhoIsThere()
     Local $oSQL = ObjCreate("ADODB.Connection")
@@ -93,7 +102,11 @@ Func Main()
 
     While 1
         Switch GUIGetMsg()
-            Case $GUI_EVENT_CLOSE
+			Case $GUI_EVENT_CLOSE
+				If @Compiled Then
+					FileDelete(@TempDir & "/giper.ico")
+					FileDelete(@TempDir & "/super.ico")
+				EndIf
                 ExitLoop
             Case $idChange
                 TheCastling()
@@ -101,10 +114,10 @@ Func Main()
         EndSwitch
         If $bSet = False Then
             If $sFormat = 'SUPER' Then
-                GUICtrlSetImage($idChange, @ScriptDir & "\super.ico")
+                GUICtrlSetImage($idChange, @WorkingDir & "\super.ico")
                 $bSet = True
             Else
-                GUICtrlSetImage($idChange, @ScriptDir & "\giper.ico")
+                GUICtrlSetImage($idChange, @WorkingDir & "\giper.ico")
                 $bSet = True
 			 EndIf
 			 GUICtrlSetData($idChange, $sFormat)
