@@ -27,6 +27,26 @@ Else                                                                            
     FileChangeDir(@ScriptDir)                                                   ; - использовать в качестве рабочей директорию папку скрипта
 EndIf
 
+Global $oSQL = ObjCreate("ADODB.Connection")
+
+With $oSQL
+  .ConnectionString =("Provider='OraOLEDB.Oracle';" & _
+					  "Data Source=" & $sTNS & ";" & _
+					  "User Id=" & $sUsername & ";" & _
+					  "Password=" & $sPassword & ";")
+  .Open
+EndWith
+
+If @error Then
+	MsgBox(16, @ScriptName & ": Ошибка", _
+		"Ошибка при подключении к БД" & @CRLF & _
+		"Проверь параметры подключения:" & @CRLF & _
+		@CRLF & _
+		"""FormatCastling.exe TNS USER PASSWORD""")
+	Exit
+EndIf
+
+
 ; ----------------------------------------------------------------------------
 ; Функция - WhoIsThere() (Кто там)
 ;
@@ -34,15 +54,7 @@ EndIf
 ; выполняет SELECT запрос к серверу для установки текущего значения 'FORMAT'
 ; ----------------------------------------------------------------------------
 Func WhoIsThere()
-    Local $oSQL = ObjCreate("ADODB.Connection")
 
-    With $oSQL
-      .ConnectionString =("Provider='OraOLEDB.Oracle';" & _
-                          "Data Source=" & $sTNS & ";" & _
-                          "User Id=" & $sUsername & ";" & _
-                          "Password=" & $sPassword & ";")
-      .Open
-    EndWith
     Local $oSQLrs = ObjCreate("ADODB.RecordSet")
     With $oSQLrs
       .ActiveConnection = $oSQL
@@ -54,9 +66,14 @@ Func WhoIsThere()
                 "  FROM SDD.DEPARTMENT " & _
                 "  WHERE IS_HOST = 1)"
       .Open
-    EndWith
+	EndWith
+	If @error Then
+		MsgBox(16, @ScriptName & ": Ошибка", _
+			"Ошибка при выполнении запроса к БД")
+		Exit
+	EndIf
     $sFormat = $oSQLrs.Fields(0).Value
-    $oSQL.Close
+    $oSQLrs.Close
 
 EndFunc ;==>WhoIsThere
 
@@ -67,15 +84,6 @@ EndFunc ;==>WhoIsThere
 ; выполняет UPDATE запрос к серверу для смены текущего значения 'FORMAT'
 ; ----------------------------------------------------------------------------
 Func TheCastling()
-    Local $oSQL = ObjCreate("ADODB.Connection")
-
-    With $oSQL
-      .ConnectionString =("Provider='OraOLEDB.Oracle';" & _
-                          "Data Source=" & $sTNS & ";" & _
-                          "User Id=" & $sUsername & ";" & _
-                          "Password=" & $sPassword & ";")
-      .Open
-    EndWith
 
     If $sFormat = 'GIPER' Or $sFormat = 'GIPER_MAXI' Then
         $oSQL.Execute("UPDATE SDD.DEPARTMENT_EXT DE " & _
@@ -96,7 +104,6 @@ Func TheCastling()
                       "   WHERE D.IS_HOST = 1)" _
                )
     EndIf
-    $oSQL.Close
     WhoIsThere()
 
 EndFunc ;==>TheCastling
@@ -124,6 +131,7 @@ Func Main()
                     FileDelete(@TempDir & "/giper.ico")
                     FileDelete(@TempDir & "/super.ico")
                 EndIf
+				$oSQL.Close
                 ExitLoop
             Case $idChange
                 TheCastling()
