@@ -1,30 +1,38 @@
-#AutoIt3Wrapper_Icon=FC.ico
+#AutoIt3Wrapper_Icon=FC.ico                                                     ; заменить иконку для сборки в EXE
 
 #include <ButtonConstants.au3>
 #include <GUIConstants.au3>
 #include <GUIConstantsEx.au3>
 
-Global $sFormat
+Global $sFormat                                                                 ; переменная типа String для хранения значения 'FORMAT'
 
-If $CmdLine[0] < 3 Then
-   MsgBox(16, @ScriptName & ": Ошибка", "Неверно указана строка соединения с БД" & _
-			@CRLF & "Укажи параметры следующим образом:" & _
-			@CRLF & @CRLF & """FormatCastling.exe TNS USER PASSWORD""")
+If $CmdLine[0] < 3 Then                                                         ; вывести ошибку, если не введены параметры CMD
+   MsgBox(16, @ScriptName & ": Ошибка", _
+            "Неверно указана строка соединения с БД" & @CRLF & _
+            "Укажи параметры следующим образом:" & @CRLF & _
+            @CRLF & _
+            """FormatCastling.exe TNS USER PASSWORD""")
    Exit
 EndIf
 
-Global $sTNS = $CmdLine[1]
+Global $sTNS = $CmdLine[1]                                                      ; переменные параметров командной строки $CmdLine
 Global $sUsername = $CmdLine[2]
 Global $sPassword = $CmdLine[3]
 
-If @Compiled Then
-	FileInstall("giper.ico", @TempDir & "\giper.ico")
-	FileInstall("super.ico", @TempDir & "\super.ico")
-    FileChangeDir(@TempDir)
-Else
-	FileChangeDir(@ScriptDir)
+If @Compiled Then                                                               ; для EXE:
+    FileInstall("giper.ico", @TempDir & "\giper.ico")                           ; - скопировать в EXE файлы ресурсов
+    FileInstall("super.ico", @TempDir & "\super.ico")                           ;   с распаковкой их во временную папку при выполнении
+    FileChangeDir(@TempDir)                                                     ; - сменить рабочую директорию на временную папку
+Else                                                                            ; для AU3:
+    FileChangeDir(@ScriptDir)                                                   ; - использовать в качестве рабочей директорию папку скрипта
 EndIf
 
+; ----------------------------------------------------------------------------
+; Функция - WhoIsThere() (Кто там)
+;
+; Описание:
+; выполняет SELECT запрос к серверу для установки текущего значения 'FORMAT'
+; ----------------------------------------------------------------------------
 Func WhoIsThere()
     Local $oSQL = ObjCreate("ADODB.Connection")
 
@@ -52,6 +60,12 @@ Func WhoIsThere()
 
 EndFunc ;==>WhoIsThere
 
+; ----------------------------------------------------------------------------
+; Функция - TheCastling() (Рокировка)
+;
+; Описание:
+; выполняет UPDATE запрос к серверу для смены текущего значения 'FORMAT'
+; ----------------------------------------------------------------------------
 Func TheCastling()
     Local $oSQL = ObjCreate("ADODB.Connection")
 
@@ -63,9 +77,9 @@ Func TheCastling()
       .Open
     EndWith
 
-    If $sFormat = 'SUPER' Then
+    If $sFormat = 'GIPER' Or $sFormat = 'GIPER_MAXI' Then
         $oSQL.Execute("UPDATE SDD.DEPARTMENT_EXT DE " & _
-                      "SET DE.EXT_STRING = 'GIPER' " & _
+                      "SET DE.EXT_STRING = 'SUPER' " & _
                       "WHERE DE.EXT_NAME = 'FORMAT' AND " & _
                       "DE.ID_DEPARTMENT = ( " & _
                       "   SELECT D.ID_DEPARTMENT " & _
@@ -74,7 +88,7 @@ Func TheCastling()
                )
     Else
         $oSQL.Execute("UPDATE SDD.DEPARTMENT_EXT DE " & _
-                      "SET DE.EXT_STRING = 'SUPER' " & _
+                      "SET DE.EXT_STRING = 'GIPER' " & _
                       "WHERE DE.EXT_NAME = 'FORMAT' AND " & _
                       "DE.ID_DEPARTMENT = ( " & _
                       "   SELECT D.ID_DEPARTMENT " & _
@@ -87,51 +101,53 @@ Func TheCastling()
 
 EndFunc ;==>TheCastling
 
+; ----------------------------------------------------------------------------
+; Функция - Main() (Основная)
+; ----------------------------------------------------------------------------
 Func Main()
-    Local $bSet = False
-    Local $lCount = TimerInit()
-    Local $sSetFormat
+    Local $bSet = False                                                         ; флаг смены состояния для опроса
+    Local $lCount = TimerInit()                                                 ; запустить таймер
+    Local $sPrevFormat                                                          ; предыдущее значение 'FORMAT'
 
     GUICreate("FC", 120, 120, @DesktopWidth - 160, 100, Default, $WS_EX_TOPMOST)
     GUISetIcon(@ScriptDir & "\FC.ico")
-	$idChange = GUICtrlCreateButton("Format Pic", 10, 10, 100, 100, $BS_ICON)
+    $idChange = GUICtrlCreateButton("Format", 10, 10, 100, 100, $BS_ICON)
 
     WhoIsThere()
-    $sSetFormat = $sFormat
+    $sPrevFormat = $sFormat
     GUISetState(@SW_SHOW)
 
     While 1
         Switch GUIGetMsg()
-			Case $GUI_EVENT_CLOSE
-				If @Compiled Then
-					FileDelete(@TempDir & "/giper.ico")
-					FileDelete(@TempDir & "/super.ico")
-				EndIf
+            Case $GUI_EVENT_CLOSE
+                If @Compiled Then                                               ; для EXE - прибраться за собой
+                    FileDelete(@TempDir & "/giper.ico")
+                    FileDelete(@TempDir & "/super.ico")
+                EndIf
                 ExitLoop
             Case $idChange
                 TheCastling()
-                $bSet = False
+                $bSet = False                                                   ; снять флаг bSet, что инициирует смену картинки
         EndSwitch
-        If $bSet = False Then
-            If $sFormat = 'SUPER' Then
-                GUICtrlSetImage($idChange, @WorkingDir & "\super.ico")
-                $bSet = True
-            Else
+        If $bSet = False Then                                                   ; смена картинки на кнопке, если флаг bSet снят
+            If $sFormat = 'GIPER' Or $sFormat = 'GIPER_MAXI' Then
                 GUICtrlSetImage($idChange, @WorkingDir & "\giper.ico")
-                $bSet = True
-			EndIf
-			GUICtrlSetData($idChange, $sFormat)
-            $sSetFormat = $sFormat
-        EndIf
-        If TimerDiff($lCount) >= 1000 Then
-            WhoIsThere()
-            If StringCompare($sFormat, $sSetFormat) <> 0 Then
-                $bSet = False
+            Else
+                GUICtrlSetImage($idChange, @WorkingDir & "\super.ico")
             EndIf
-                $lCount = TimerInit()
+            $bSet = True
+            $sPrevFormat = $sFormat
+            GUICtrlSetData($idChange, $sFormat)                                 ; смена названия кнопки (если картинка недоступна)
+        EndIf
+        If TimerDiff($lCount) >= 1000 Then                                      ; проверка с частотой 1 раз в 1 сек. была ли смена формата
+            WhoIsThere()
+            If StringCompare($sFormat, $sPrevFormat) <> 0 Then                  ; если кем-то произведена смена формата
+                $bSet = False                                                   ; снять флаг bSet, что инициирует смену картинки на следующей итерации
+            EndIf
+                $lCount = TimerInit()                                           ; перезапустить таймер
         EndIf
     WEnd
 EndFunc   ;==>Main
 
- ;Run the app
+ ;Выполнить сценарий
  Main()
