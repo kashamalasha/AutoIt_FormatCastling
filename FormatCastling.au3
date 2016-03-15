@@ -1,57 +1,57 @@
-#AutoIt3Wrapper_Icon=FC.ico                                                     ; заменить иконку для сборки в EXE
+#AutoIt3Wrapper_Icon=FC.ico                                                     ; Р·Р°РјРµРЅРёС‚СЊ РёРєРѕРЅРєСѓ РґР»СЏ СЃР±РѕСЂРєРё РІ EXE
 
 #include <ButtonConstants.au3>
 #include <GUIConstants.au3>
 #include <GUIConstantsEx.au3>
 
-Global $sFormat                                                                 ; переменная типа String для хранения значения 'FORMAT'
+Global $sFormat                                                                 ; РїРµСЂРµРјРµРЅРЅР°СЏ С‚РёРїР° String РґР»СЏ С…СЂР°РЅРµРЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ 'FORMAT'
 
-If $CmdLine[0] < 3 Then                                                         ; вывести ошибку, если не введены параметры CMD
-   MsgBox(16, @ScriptName & ": Ошибка", _
-            "Неверно указана строка соединения с БД" & @CRLF & _
-            "Укажи параметры следующим образом:" & @CRLF & _
+If $CmdLine[0] < 3 Then                                                         ; РІС‹РІРµСЃС‚Рё РѕС€РёР±РєСѓ, РµСЃР»Рё РЅРµ РІРІРµРґРµРЅС‹ РїР°СЂР°РјРµС‚СЂС‹ CMD
+   MsgBox(16, @ScriptName & ": РћС€РёР±РєР°", _
+            "РќРµРІРµСЂРЅРѕ СѓРєР°Р·Р°РЅР° СЃС‚СЂРѕРєР° СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ Р‘Р”" & @CRLF & _
+            "РЈРєР°Р¶Рё РїР°СЂР°РјРµС‚СЂС‹ СЃР»РµРґСѓСЋС‰РёРј РѕР±СЂР°Р·РѕРј:" & @CRLF & _
             @CRLF & _
             """FormatCastling.exe TNS USER PASSWORD""")
    Exit
 EndIf
 
-Global $sTNS = $CmdLine[1]                                                      ; переменные параметров командной строки $CmdLine
+Global $sTNS = $CmdLine[1]                                                      ; РїРµСЂРµРјРµРЅРЅС‹Рµ РїР°СЂР°РјРµС‚СЂРѕРІ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё $CmdLine
 Global $sUsername = $CmdLine[2]
 Global $sPassword = $CmdLine[3]
 
-If @Compiled Then                                                               ; для EXE:
-    FileInstall("giper.ico", @TempDir & "\giper.ico")                           ; - скопировать в EXE файлы ресурсов
-    FileInstall("super.ico", @TempDir & "\super.ico")                           ;   с распаковкой их во временную папку при выполнении
-    FileChangeDir(@TempDir)                                                     ; - сменить рабочую директорию на временную папку
-Else                                                                            ; для AU3:
-    FileChangeDir(@ScriptDir)                                                   ; - использовать в качестве рабочей директорию папку скрипта
+If @Compiled Then                                                               ; РґР»СЏ EXE:
+    FileInstall("giper.ico", @TempDir & "\giper.ico")                           ; - СЃРєРѕРїРёСЂРѕРІР°С‚СЊ РІ EXE С„Р°Р№Р»С‹ СЂРµСЃСѓСЂСЃРѕРІ
+    FileInstall("super.ico", @TempDir & "\super.ico")                           ;   СЃ СЂР°СЃРїР°РєРѕРІРєРѕР№ РёС… РІРѕ РІСЂРµРјРµРЅРЅСѓСЋ РїР°РїРєСѓ РїСЂРё РІС‹РїРѕР»РЅРµРЅРёРё
+    FileChangeDir(@TempDir)                                                     ; - СЃРјРµРЅРёС‚СЊ СЂР°Р±РѕС‡СѓСЋ РґРёСЂРµРєС‚РѕСЂРёСЋ РЅР° РІСЂРµРјРµРЅРЅСѓСЋ РїР°РїРєСѓ
+Else                                                                            ; РґР»СЏ AU3:
+    FileChangeDir(@ScriptDir)                                                   ; - РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РІ РєР°С‡РµСЃС‚РІРµ СЂР°Р±РѕС‡РµР№ РґРёСЂРµРєС‚РѕСЂРёСЋ РїР°РїРєСѓ СЃРєСЂРёРїС‚Р°
 EndIf
 
 Global $oSQL = ObjCreate("ADODB.Connection")
 
 With $oSQL
   .ConnectionString =("Provider='OraOLEDB.Oracle';" & _
-					  "Data Source=" & $sTNS & ";" & _
-					  "User Id=" & $sUsername & ";" & _
-					  "Password=" & $sPassword & ";")
+                      "Data Source=" & $sTNS & ";" & _
+                      "User Id=" & $sUsername & ";" & _
+                      "Password=" & $sPassword & ";")
   .Open
 EndWith
 
 If @error Then
-	MsgBox(16, @ScriptName & ": Ошибка", _
-		"Ошибка при подключении к БД" & @CRLF & _
-		"Проверь параметры подключения:" & @CRLF & _
-		@CRLF & _
-		"""FormatCastling.exe TNS USER PASSWORD""")
-	Exit
+    MsgBox(16, @ScriptName & ": РћС€РёР±РєР°", _
+        "РћС€РёР±РєР° РїСЂРё РїРѕРґРєР»СЋС‡РµРЅРёРё Рє Р‘Р”" & @CRLF & _
+        "РџСЂРѕРІРµСЂСЊ РїР°СЂР°РјРµС‚СЂС‹ РїРѕРґРєР»СЋС‡РµРЅРёСЏ:" & @CRLF & _
+        @CRLF & _
+        """FormatCastling.exe TNS USER PASSWORD""")
+    Exit
 EndIf
 
 
 ; ----------------------------------------------------------------------------
-; Функция - WhoIsThere() (Кто там)
+; Р¤СѓРЅРєС†РёСЏ - WhoIsThere() (РљС‚Рѕ С‚Р°Рј)
 ;
-; Описание:
-; выполняет SELECT запрос к серверу для установки текущего значения 'FORMAT'
+; РћРїРёСЃР°РЅРёРµ:
+; РІС‹РїРѕР»РЅСЏРµС‚ SELECT Р·Р°РїСЂРѕСЃ Рє СЃРµСЂРІРµСЂСѓ РґР»СЏ СѓСЃС‚Р°РЅРѕРІРєРё С‚РµРєСѓС‰РµРіРѕ Р·РЅР°С‡РµРЅРёСЏ 'FORMAT'
 ; ----------------------------------------------------------------------------
 Func WhoIsThere()
 
@@ -66,22 +66,22 @@ Func WhoIsThere()
                 "  FROM SDD.DEPARTMENT " & _
                 "  WHERE IS_HOST = 1)"
       .Open
-	EndWith
-	If @error Then
-		MsgBox(16, @ScriptName & ": Ошибка", _
-			"Ошибка при выполнении запроса к БД")
-		Exit
-	EndIf
+    EndWith
+    If @error Then
+        MsgBox(16, @ScriptName & ": РћС€РёР±РєР°", _
+            "РћС€РёР±РєР° РїСЂРё РІС‹РїРѕР»РЅРµРЅРёРё Р·Р°РїСЂРѕСЃР° Рє Р‘Р”")
+        Exit
+    EndIf
     $sFormat = $oSQLrs.Fields(0).Value
     $oSQLrs.Close
 
 EndFunc ;==>WhoIsThere
 
 ; ----------------------------------------------------------------------------
-; Функция - TheCastling() (Рокировка)
+; Р¤СѓРЅРєС†РёСЏ - TheCastling() (Р РѕРєРёСЂРѕРІРєР°)
 ;
-; Описание:
-; выполняет UPDATE запрос к серверу для смены текущего значения 'FORMAT'
+; РћРїРёСЃР°РЅРёРµ:
+; РІС‹РїРѕР»РЅСЏРµС‚ UPDATE Р·Р°РїСЂРѕСЃ Рє СЃРµСЂРІРµСЂСѓ РґР»СЏ СЃРјРµРЅС‹ С‚РµРєСѓС‰РµРіРѕ Р·РЅР°С‡РµРЅРёСЏ 'FORMAT'
 ; ----------------------------------------------------------------------------
 Func TheCastling()
 
@@ -109,12 +109,12 @@ Func TheCastling()
 EndFunc ;==>TheCastling
 
 ; ----------------------------------------------------------------------------
-; Функция - Main() (Основная)
+; Р¤СѓРЅРєС†РёСЏ - Main() (РћСЃРЅРѕРІРЅР°СЏ)
 ; ----------------------------------------------------------------------------
 Func Main()
-    Local $bSet = False                                                         ; флаг смены состояния для опроса
-    Local $lCount = TimerInit()                                                 ; запустить таймер
-    Local $sPrevFormat                                                          ; предыдущее значение 'FORMAT'
+    Local $bSet = False                                                         ; С„Р»Р°Рі СЃРјРµРЅС‹ СЃРѕСЃС‚РѕСЏРЅРёСЏ РґР»СЏ РѕРїСЂРѕСЃР°
+    Local $lCount = TimerInit()                                                 ; Р·Р°РїСѓСЃС‚РёС‚СЊ С‚Р°Р№РјРµСЂ
+    Local $sPrevFormat                                                          ; РїСЂРµРґС‹РґСѓС‰РµРµ Р·РЅР°С‡РµРЅРёРµ 'FORMAT'
 
     GUICreate("FC", 120, 120, @DesktopWidth - 160, 100, Default, $WS_EX_TOPMOST)
     GUISetIcon(@ScriptDir & "\FC.ico")
@@ -127,17 +127,17 @@ Func Main()
     While 1
         Switch GUIGetMsg()
             Case $GUI_EVENT_CLOSE
-                If @Compiled Then                                               ; для EXE - прибраться за собой
+                If @Compiled Then                                               ; РґР»СЏ EXE - РїСЂРёР±СЂР°С‚СЊСЃСЏ Р·Р° СЃРѕР±РѕР№
                     FileDelete(@TempDir & "/giper.ico")
                     FileDelete(@TempDir & "/super.ico")
                 EndIf
-				$oSQL.Close
+                $oSQL.Close
                 ExitLoop
             Case $idChange
                 TheCastling()
-                $bSet = False                                                   ; снять флаг bSet, что инициирует смену картинки
+                $bSet = False                                                   ; СЃРЅСЏС‚СЊ С„Р»Р°Рі bSet, С‡С‚Рѕ РёРЅРёС†РёРёСЂСѓРµС‚ СЃРјРµРЅСѓ РєР°СЂС‚РёРЅРєРё
         EndSwitch
-        If $bSet = False Then                                                   ; смена картинки на кнопке, если флаг bSet снят
+        If $bSet = False Then                                                   ; СЃРјРµРЅР° РєР°СЂС‚РёРЅРєРё РЅР° РєРЅРѕРїРєРµ, РµСЃР»Рё С„Р»Р°Рі bSet СЃРЅСЏС‚
             If $sFormat = 'GIPER' Or $sFormat = 'GIPER_MAXI' Then
                 GUICtrlSetImage($idChange, @WorkingDir & "\giper.ico")
             Else
@@ -145,17 +145,17 @@ Func Main()
             EndIf
             $bSet = True
             $sPrevFormat = $sFormat
-            GUICtrlSetData($idChange, $sFormat)                                 ; смена названия кнопки (если картинка недоступна)
+            GUICtrlSetData($idChange, $sFormat)                                 ; СЃРјРµРЅР° РЅР°Р·РІР°РЅРёСЏ РєРЅРѕРїРєРё (РµСЃР»Рё РєР°СЂС‚РёРЅРєР° РЅРµРґРѕСЃС‚СѓРїРЅР°)
         EndIf
-        If TimerDiff($lCount) >= 1000 Then                                      ; проверка с частотой 1 раз в 1 сек. была ли смена формата
+        If TimerDiff($lCount) >= 1000 Then                                      ; РїСЂРѕРІРµСЂРєР° СЃ С‡Р°СЃС‚РѕС‚РѕР№ 1 СЂР°Р· РІ 1 СЃРµРє. Р±С‹Р»Р° Р»Рё СЃРјРµРЅР° С„РѕСЂРјР°С‚Р°
             WhoIsThere()
-            If StringCompare($sFormat, $sPrevFormat) <> 0 Then                  ; если кем-то произведена смена формата
-                $bSet = False                                                   ; снять флаг bSet, что инициирует смену картинки на следующей итерации
+            If StringCompare($sFormat, $sPrevFormat) <> 0 Then                  ; РµСЃР»Рё РєРµРј-С‚Рѕ РїСЂРѕРёР·РІРµРґРµРЅР° СЃРјРµРЅР° С„РѕСЂРјР°С‚Р°
+                $bSet = False                                                   ; СЃРЅСЏС‚СЊ С„Р»Р°Рі bSet, С‡С‚Рѕ РёРЅРёС†РёРёСЂСѓРµС‚ СЃРјРµРЅСѓ РєР°СЂС‚РёРЅРєРё РЅР° СЃР»РµРґСѓСЋС‰РµР№ РёС‚РµСЂР°С†РёРё
             EndIf
-                $lCount = TimerInit()                                           ; перезапустить таймер
+                $lCount = TimerInit()                                           ; РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ С‚Р°Р№РјРµСЂ
         EndIf
     WEnd
 EndFunc   ;==>Main
 
- ;Выполнить сценарий
+ ;Р’С‹РїРѕР»РЅРёС‚СЊ СЃС†РµРЅР°СЂРёР№
  Main()
