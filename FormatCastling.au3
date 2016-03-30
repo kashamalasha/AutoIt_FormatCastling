@@ -4,6 +4,12 @@
 #include <GUIConstants.au3>
 #include <GUIConstantsEx.au3>
 
+If WinExists('[CLASS:AutoIt v3;TITLE:' & @ScriptName & ']') Then                ; запрет повторного запуска
+    MsgBox(16, @ScriptName, 'Сценарий уже выполняется.')
+    Exit
+EndIf
+AutoItWinSetTitle(@ScriptName)
+
 Global $sFormat                                                                 ; переменная типа String для хранения значения 'FORMAT'
 
 If $CmdLine[0] < 3 Then                                                         ; вывести ошибку, если не введены параметры CMD
